@@ -19,6 +19,12 @@ actionsToolkit.run(
     const input: context.Inputs = context.getInputs();
     const runDir = path.join(input.runtimeBasedir, `run-${crypto.randomUUID().slice(0, 8)}`);
 
+    // Set DOCKER_MIRROR environment variable if docker-mirror input is provided
+    if (input.dockerMirror) {
+      process.env.DOCKER_MIRROR = input.dockerMirror;
+      core.info(`Using Docker mirror: ${input.dockerMirror}`);
+    }
+
     if (input.context == 'default') {
       throw new Error(`'default' context cannot be used.`);
     }

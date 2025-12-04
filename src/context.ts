@@ -15,6 +15,7 @@ export interface Inputs {
   rootless: boolean;
   runtimeBasedir: string;
   githubToken: string;
+  dockerMirror?: string;
 }
 
 export function getInputs(): Inputs {
@@ -33,7 +34,8 @@ export function getInputs(): Inputs {
     setHost: core.getBooleanInput('set-host'),
     rootless: core.getBooleanInput('rootless'),
     runtimeBasedir: core.getInput('runtime-basedir') || path.join(os.homedir(), `setup-docker-action`),
-    githubToken: core.getInput('github-token')
+    githubToken: core.getInput('github-token'),
+    dockerMirror: core.getInput('docker-mirror') || undefined
   };
 }
 

@@ -38,6 +38,9 @@ inputs:
     description: "GitHub Token used to get releases and download assets"
     default: ${{ github.token }}
     required: false
+  docker-mirror:
+    description: "Docker mirror URL to use for downloading Docker binaries"
+    required: false
 
 outputs:
   sock:
