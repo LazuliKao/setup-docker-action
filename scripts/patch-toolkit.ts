@@ -1,34 +1,21 @@
-const fs = require('fs');
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
 
-const DOCKER_MIRROR_PLACEHOLDER = '__DOCKER_MIRROR_URL__';
-const DEFAULT_DOCKER_URL = 'https://download.docker.com';
+interface Patch {
+  description: string;
+  search: string;
+  replace: string;
+}
+
+const nodeModulesPath = path.join(__dirname, '..', 'node_modules', '@docker', 'actions-toolkit', 'lib', 'docker');
 
 // Path to the install.js file in @docker/actions-toolkit
-const installJsPath = path.join(
-  __dirname,
-  '..',
-  'node_modules',
-  '@docker',
-  'actions-toolkit',
-  'lib',
-  'docker',
-  'install.js'
-);
+const installJsPath = path.join(nodeModulesPath, 'install.js');
 
 // Path to the assets.js file in @docker/actions-toolkit
-const assetsJsPath = path.join(
-  __dirname,
-  '..',
-  'node_modules',
-  '@docker',
-  'actions-toolkit',
-  'lib',
-  'docker',
-  'assets.js'
-);
+const assetsJsPath = path.join(nodeModulesPath, 'assets.js');
 
-function patchFile(filePath, patches) {
+function patchFile(filePath: string, patches: Patch[]): void {
   if (!fs.existsSync(filePath)) {
     console.error(`File not found: ${filePath}`);
     process.exit(1);
@@ -82,9 +69,11 @@ patchFile(installJsPath, [
 patchFile(assetsJsPath, [
   {
     description: 'Replace get.docker.com in lima yaml provision script',
-    search: 'curl -fsSL https://get.docker.com | sh -s -- --channel {{srcArchiveChannel}} --version {{srcArchiveVersion}}',
-    replace: 'DOCKER_GET_SCRIPT_URL="\\${DOCKER_MIRROR:-https://get.docker.com}"; curl -fsSL "\\$DOCKER_GET_SCRIPT_URL" | sh -s -- --channel {{srcArchiveChannel}} --version {{srcArchiveVersion}}'
+    search:
+      'curl -fsSL https://get.docker.com | sh -s -- --channel {{srcArchiveChannel}} --version {{srcArchiveVersion}}',
+    replace:
+      'DOCKER_GET_SCRIPT_URL="\\${DOCKER_MIRROR:-https://get.docker.com}"; curl -fsSL "\\$DOCKER_GET_SCRIPT_URL" | sh -s -- --channel {{srcArchiveChannel}} --version {{srcArchiveVersion}}'
   }
 ]);
 
-console.log('\\nPatch completed successfully!');
+console.log('\nPatch completed successfully!');
